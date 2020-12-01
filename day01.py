@@ -5,6 +5,9 @@ from typing import Iterable, Tuple
 def find_n_numbers_totaling(n: int,
                             total: int,
                             numbers: Iterable[int]) -> Tuple[int, ...]:
+    """
+    Find n ints whose sum is equal to total from an iterable of ints.
+    """
     return next(group for group in combinations(numbers, n)
                 if sum(group) == total)
 
