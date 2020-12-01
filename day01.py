@@ -1,4 +1,5 @@
 from itertools import combinations
+from time import time
 from typing import Iterable, Tuple
 
 
@@ -26,5 +27,7 @@ def part2(filename: str) -> int:
 
 if __name__ == '__main__':
     puzzle_input = 'input_day01.txt'
-    print(part1(puzzle_input))  # 1016131
-    print(part2(puzzle_input))  # 276432018
+    part1_start = time()
+    print(part1(puzzle_input), f"{time() - part1_start:.3}s")  # 1016131
+    part2_start = time()
+    print(part2(puzzle_input), f"{time() - part2_start:.3}s")  # 276432018
