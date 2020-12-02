@@ -1,5 +1,5 @@
 from collections import Counter
-from typing import Tuple
+from typing import Callable, Tuple
 
 
 def parse_line(line: str) -> Tuple[Tuple[int, int], str, str]:
@@ -14,9 +14,9 @@ def parse_line(line: str) -> Tuple[Tuple[int, int], str, str]:
     return ((at_least, at_most), letter, password)
 
 
-def is_valid(times: Tuple[int, int],
-             letter: str,
-             password: str) -> bool:
+def is_valid_times(times: Tuple[int, int],
+                   letter: str,
+                   password: str) -> bool:
     """
     Return True if password is valid according to policy: letter appears
     correct number of times.
@@ -25,10 +25,33 @@ def is_valid(times: Tuple[int, int],
     return Counter(password)[letter] in range(at_least, at_most + 1)
 
 
+def is_valid_positions(positions: Tuple[int, int],
+                       letter: str,
+                       password: str) -> bool:
+    """
+    Return True if password is valid according to policy: letter appears
+    at the correct location.
+    """
+    i, j = positions
+    i -= 1
+    j -= 1
+    return ((password[i] == letter and password[j] != letter) or
+            (password[i] != letter and password[j] == letter))
+
+
+def count_valid_passwords(filename: str, validation_fn: Callable) -> int:
+    return sum(validation_fn(*parse_line(line)) for line in open(filename))
+
+
 def part1(filename: str) -> int:
-    return sum(is_valid(*parse_line(line)) for line in open(filename))
+    return count_valid_passwords(filename, is_valid_times)
+
+
+def part2(filename: str) -> int:
+    return count_valid_passwords(filename, is_valid_positions)
 
 
 if __name__ == '__main__':
     puzzle_input = 'input_day02.txt'
     print(part1(puzzle_input))  # 454
+    print(part2(puzzle_input))  # 649
