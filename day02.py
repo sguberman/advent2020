@@ -1,4 +1,5 @@
 from collections import Counter
+from time import time
 from typing import Callable, Tuple
 
 
@@ -53,5 +54,7 @@ def part2(filename: str) -> int:
 
 if __name__ == '__main__':
     puzzle_input = 'input_day02.txt'
-    print(part1(puzzle_input))  # 454
-    print(part2(puzzle_input))  # 649
+    part1_start = time()
+    print(part1(puzzle_input), f"{time() - part1_start:.3f}s")  # 454
+    part2_start = time()
+    print(part2(puzzle_input), f"{time() - part2_start:.3f}s")  # 649
