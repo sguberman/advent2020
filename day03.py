@@ -1,3 +1,4 @@
+from itertools import count
 from math import prod
 from time import time
 from typing import List
@@ -10,16 +11,9 @@ def read_tree_map(filename: str) -> List[str]:
 def count_trees_in_path(tree_map: List[str], dx: int, dy: int) -> int:
     width = len(tree_map[0])
     height = len(tree_map)
-    x, y = 0, 0
-    count = 0
-    while True:
-        x = (x + dx) % width
-        y += dy
-        if y >= height:
-            break
-        if tree_map[y][x] == '#':
-            count += 1
-    return count
+    xs = (x % width for x in count(0, dx))
+    ys = range(0, height, dy)
+    return sum(tree_map[y][x] == '#' for x, y in zip(xs, ys))
 
 
 def part1(filename: str) -> int:
