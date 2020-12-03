@@ -1,3 +1,4 @@
+from math import prod
 from typing import List
 
 
@@ -27,11 +28,8 @@ def part1(filename: str) -> int:
 
 def part2(filename: str) -> int:
     tree_map = read_tree_map(filename)
-    result = 1
     slopes = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
-    for dx, dy in slopes:
-        result *= count_trees_in_path(tree_map, dx, dy)
-    return result
+    return prod(count_trees_in_path(tree_map, dx, dy) for dx, dy in slopes)
 
 
 if __name__ == '__main__':
