@@ -1,8 +1,11 @@
-def read_tree_map(filename):
+from typing import List
+
+
+def read_tree_map(filename: str) -> List[str]:
     return [line.strip() for line in open(filename)]
 
 
-def count_trees_in_path(tree_map, dx, dy):
+def count_trees_in_path(tree_map: List[str], dx: int, dy: int) -> int:
     width = len(tree_map[0])
     height = len(tree_map)
     x, y = 0, 0
@@ -17,13 +20,13 @@ def count_trees_in_path(tree_map, dx, dy):
     return count
 
 
-def part1(puzzle_input):
-    tree_map = read_tree_map(puzzle_input)
+def part1(filename: str) -> int:
+    tree_map = read_tree_map(filename)
     return count_trees_in_path(tree_map, 3, 1)
 
 
-def part2(puzzle_input):
-    tree_map = read_tree_map(puzzle_input)
+def part2(filename: str) -> int:
+    tree_map = read_tree_map(filename)
     result = 1
     slopes = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
     for dx, dy in slopes:
