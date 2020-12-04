@@ -24,6 +24,18 @@ def check_yr(passport: dict, key: str, minn: int, maxx: int) -> bool:
         return False
 
 
+def check_byr(passport: dict) -> bool:
+    return check_yr(passport, 'byr', 1920, 2002)
+
+
+def check_iyr(passport: dict) -> bool:
+    return check_yr(passport, 'iyr', 2010, 2020)
+
+
+def check_eyr(passport: dict) -> bool:
+    return check_yr(passport, 'eyr', 2020, 2030)
+
+
 def check_hgt(passport: dict) -> bool:
     hgt = passport['hgt']
     h, unit = hgt[:-2], hgt[-2:]
@@ -59,14 +71,9 @@ def is_valid(passport: dict) -> bool:
     if not check_fields(passport):
         return False
     else:
-        byr = check_yr(passport, 'byr', 1920, 2002)
-        iyr = check_yr(passport, 'iyr', 2010, 2020)
-        eyr = check_yr(passport, 'eyr', 2020, 2030)
-        hgt = check_hgt(passport)
-        hcl = check_hcl(passport)
-        ecl = check_ecl(passport)
-        pid = check_pid(passport)
-        return byr and iyr and eyr and hgt and hcl and ecl and pid
+        checks = [check_byr, check_iyr, check_eyr, check_hgt, check_hcl,
+                  check_ecl, check_pid]
+        return all(check(passport) for check in checks)
 
 
 def part1(filename: str) -> int:
