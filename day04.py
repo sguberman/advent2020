@@ -29,6 +29,8 @@ def check_hgt(passport):
             return 150 <= h <= 193
         elif unit == 'in':
             return 59 <= h <= 76
+        else:
+            return False
     except:
         return False
 
