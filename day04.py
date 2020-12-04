@@ -1,13 +1,10 @@
 def read_passports(filename):
-    passport_entries = open(filename).read().split('\n\n')
-    passports = []
-    for passport_entry in passport_entries:
+    for passport_text in open(filename).read().split('\n\n'):
         passport = {}
-        for field in passport_entry.split():
+        for field in passport_text.split():
             key, value = field.split(':')
             passport[key] = value
-        passports.append(passport)
-    return passports
+        yield passport
 
 
 def is_valid(passport):
