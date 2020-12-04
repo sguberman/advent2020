@@ -68,12 +68,9 @@ def check_pid(passport: dict) -> bool:
 
 
 def is_valid(passport: dict) -> bool:
-    if not check_fields(passport):
-        return False
-    else:
-        checks = [check_byr, check_iyr, check_eyr, check_hgt, check_hcl,
-                  check_ecl, check_pid]
-        return all(check(passport) for check in checks)
+    checks = [check_fields, check_byr, check_iyr, check_eyr, check_hgt,
+              check_hcl, check_ecl, check_pid]
+    return all(check(passport) for check in checks)
 
 
 def part1(filename: str) -> int:
