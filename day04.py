@@ -64,7 +64,7 @@ def check_ecl(passport: dict) -> bool:
 
 def check_pid(passport: dict) -> bool:
     pid = passport['pid']
-    return len(pid) == 9 and pid.isnumeric()
+    return len(pid) == 9 and pid.isdigit()
 
 
 def is_valid(passport: dict) -> bool:
