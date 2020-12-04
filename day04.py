@@ -7,31 +7,15 @@ def read_passports(filename):
         yield passport
 
 
-def is_valid(passport):
+def check_fields(passport):
     fields = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
     return all(field in passport.keys() for field in fields)
 
 
-def check_byr(passport):
+def check_yr(passport, key, minn, maxx):
     try:
-        byr = int(passport['byr'])
-        return 1920 <= byr <= 2002
-    except:
-        return False
-
-
-def check_iyr(passport):
-    try:
-        iyr = int(passport['iyr'])
-        return 2010 <= iyr <= 2020
-    except:
-        return False
-
-
-def check_eyr(passport):
-    try:
-        eyr = int(passport['eyr'])
-        return 2020 <= eyr <= 2030
+        yr = int(passport[key])
+        return minn <= yr <= maxx
     except:
         return False
 
@@ -39,29 +23,20 @@ def check_eyr(passport):
 def check_hgt(passport):
     hgt = passport['hgt']
     h, unit = hgt[:-2], hgt[-2:]
-    if unit == 'cm':
-        try:
-            h = int(h)
+    try:
+        h = int(h)
+        if unit == 'cm':
             return 150 <= h <= 193
-        except:
-            return False
-    elif unit == 'in':
-        try:
-            h = int(h)
+        elif unit == 'in':
             return 59 <= h <= 76
-        except:
-            return False
-    else:
+    except:
         return False
 
 
 def check_hcl(passport):
     hcl = passport['hcl']
     first, rest = hcl[0], hcl[1:]
-    if first == '#':
-        return all(c in '0123456789abcdef' for c in rest)
-    else:
-        return False
+    return first == '#' and all(c in '0123456789abcdef' for c in rest)
 
 
 def check_ecl(passport):
@@ -71,23 +46,16 @@ def check_ecl(passport):
 
 def check_pid(passport):
     pid = passport['pid']
-    if len(pid) == 9:
-        try:
-            pid = int(pid)
-            return True
-        except:
-            return False
-    else:
-        return False
+    return len(pid) == 9 and pid.isnumeric()
 
 
-def is_valid2(passport):
-    if not is_valid(passport):
+def is_valid(passport):
+    if not check_fields(passport):
         return False
     else:
-        byr = check_byr(passport)
-        iyr = check_iyr(passport)
-        eyr = check_eyr(passport)
+        byr = check_yr(passport, 'byr', 1920, 2002)
+        iyr = check_yr(passport, 'iyr', 2010, 2020)
+        eyr = check_yr(passport, 'eyr', 2020, 2030)
         hgt = check_hgt(passport)
         hcl = check_hcl(passport)
         ecl = check_ecl(passport)
@@ -96,14 +64,14 @@ def is_valid2(passport):
 
 
 def part1(filename: str) -> int:
-    return sum(is_valid(passport) for passport in read_passports(filename))
+    return sum(check_fields(passport) for passport in read_passports(filename))
 
 
 def part2(filename: str) -> int:
-    return sum(is_valid2(passport) for passport in read_passports(filename))
+    return sum(is_valid(passport) for passport in read_passports(filename))
 
 
 if __name__ == '__main__':
     puzzle_input = 'input_day04.txt'
-    print(part1(puzzle_input))
-    print(part2(puzzle_input))
+    print(part1(puzzle_input))  # 242
+    print(part2(puzzle_input))  # 186
