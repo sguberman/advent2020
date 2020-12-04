@@ -1,4 +1,7 @@
-def read_passports(filename):
+from typing import Iterator
+
+
+def read_passports(filename: str) -> Iterator[dict]:
     for passport_text in open(filename).read().split('\n\n'):
         passport = {}
         for field in passport_text.split():
@@ -7,12 +10,12 @@ def read_passports(filename):
         yield passport
 
 
-def check_fields(passport):
+def check_fields(passport: dict) -> bool:
     fields = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
     return all(field in passport.keys() for field in fields)
 
 
-def check_yr(passport, key, minn, maxx):
+def check_yr(passport: dict, key: str, minn: int, maxx: int) -> bool:
     try:
         yr = int(passport[key])
         return minn <= yr <= maxx
@@ -20,7 +23,7 @@ def check_yr(passport, key, minn, maxx):
         return False
 
 
-def check_hgt(passport):
+def check_hgt(passport: dict) -> bool:
     hgt = passport['hgt']
     h, unit = hgt[:-2], hgt[-2:]
     try:
@@ -35,23 +38,23 @@ def check_hgt(passport):
         return False
 
 
-def check_hcl(passport):
+def check_hcl(passport: dict) -> bool:
     hcl = passport['hcl']
     first, rest = hcl[0], hcl[1:]
     return first == '#' and all(c in '0123456789abcdef' for c in rest)
 
 
-def check_ecl(passport):
+def check_ecl(passport: dict) -> bool:
     ecl = passport['ecl']
     return ecl in ('amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth')
 
 
-def check_pid(passport):
+def check_pid(passport: dict) -> bool:
     pid = passport['pid']
     return len(pid) == 9 and pid.isnumeric()
 
 
-def is_valid(passport):
+def is_valid(passport: dict) -> bool:
     if not check_fields(passport):
         return False
     else:
