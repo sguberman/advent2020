@@ -1,45 +1,43 @@
-def read_seats(filename):
-    return open(filename).read().splitlines()
+def boarding_passes(filename):
+    return (line.strip() for line in open(filename))
 
 
-def seat_id(seat):
-    return row(seat) * 8 + column(seat)
+def seat_id(boarding_pass):
+    return row(boarding_pass) * 8 + column(boarding_pass)
 
 
-def row(seat):
-    parts = seat[:7]
-    first, last = 0, 127
-    for part in parts:
-        half = first + (last - first) // 2
-        if part == 'F':
-            last = half
-        elif part == 'B':
-            first = half + 1
-    return first
+def partition(minn, maxx, halves):
+    for half in halves:
+        mid = minn + (maxx - minn) // 2
+        if half in 'FL':
+            maxx = mid
+        else:
+            minn = mid + 1
+    return minn
 
 
-def column(seat):
-    parts = seat[7:]
-    first, last = 0, 7
-    for part in parts:
-        half = first + (last - first) // 2
-        if part == 'L':
-            last = half
-        elif part == 'R':
-            first = half + 1
-    return first
+def row(boarding_pass):
+    halves = boarding_pass[:7]
+    minn, maxx = 0, 127
+    return partition(minn, maxx, halves)
+
+
+def column(boarding_pass):
+    halves = boarding_pass[-3:]
+    minn, maxx = 0, 7
+    return partition(minn, maxx, halves)
 
 
 def part1(filename):
-    return seat_id(max(read_seats(filename), key=seat_id))
+    return max(seat_id(bp) for bp in boarding_passes(filename))
 
 
 def part2(filename):
-    ids = [seat_id(seat) for seat in read_seats(filename)]
-    missing = [id for id in range(min(ids), max(ids) + 1) if id not in ids]
-    return missing
+    ids = [seat_id(bp) for bp in boarding_passes(filename)]
+    return next(id for id in range(min(ids), max(ids) + 1) if id not in ids)
 
 
 if __name__ == '__main__':
-    print(part1('input_day05.txt'))
-    print(part2('input_day05.txt'))
+    puzzle_input = 'input_day05.txt'
+    print(part1(puzzle_input))  # 994
+    print(part2(puzzle_input))  # 741
