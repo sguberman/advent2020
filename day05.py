@@ -20,7 +20,7 @@ def part1(filename: str) -> int:
 
 
 def part2(filename: str) -> int:
-    ids = [seat_id(bp) for bp in boarding_passes(filename)]
+    ids = set(seat_id(bp) for bp in boarding_passes(filename))
     return next(id for id in range(min(ids), max(ids) + 1) if id not in ids)
 
 
