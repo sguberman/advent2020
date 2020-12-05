@@ -7,29 +7,12 @@ def boarding_passes(filename: str) -> Iterator[str]:
 
 
 def seat_id(boarding_pass: str) -> int:
-    return row(boarding_pass) * 8 + column(boarding_pass)
-
-
-def partition(minn: int, maxx: int, halves: str) -> int:
-    for half in halves:
-        mid = minn + (maxx - minn) // 2
-        if half in 'FL':
-            maxx = mid
-        else:
-            minn = mid + 1
-    return minn
-
-
-def row(boarding_pass: str) -> int:
-    halves = boarding_pass[:7]
-    minn, maxx = 0, 127
-    return partition(minn, maxx, halves)
-
-
-def column(boarding_pass: str) -> int:
-    halves = boarding_pass[-3:]
-    minn, maxx = 0, 7
-    return partition(minn, maxx, halves)
+    binary_boarding_pass = boarding_pass.\
+        replace('B', '1').\
+        replace('F', '0').\
+        replace('R', '1').\
+        replace('L', '0')
+    return int(binary_boarding_pass, 2)
 
 
 def part1(filename: str) -> int:
