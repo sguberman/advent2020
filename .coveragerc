@@ -6,3 +6,5 @@ exclude_lines =
 omit =
     .env/*
     utils.py
+    dayXX.py
+    test_dayXX.py
