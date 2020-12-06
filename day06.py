@@ -22,11 +22,11 @@ def everyone_answers(group: List[str]) -> set:
     return set.intersection(*[set(x) for x in group])
 
 
-def part1(filename):
+def part1(filename: str) -> int:
     return sum(len(anyone_answers(group)) for group in groups(filename))
 
 
-def part2(filename):
+def part2(filename: str) -> int:
     return sum(len(everyone_answers(group)) for group in groups(filename))
 
 
