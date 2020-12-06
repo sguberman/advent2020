@@ -1,6 +1,7 @@
 from collections import Counter
-from time import time
 from typing import Callable, Tuple
+
+from utils import elapsed_time, print_results
 
 
 def parse_line(line: str) -> Tuple[Tuple[int, int], str, str]:
@@ -54,7 +55,5 @@ def part2(filename: str) -> int:
 
 if __name__ == '__main__':
     puzzle_input = 'input_day02.txt'
-    part1_start = time()
-    print(part1(puzzle_input), f"{time() - part1_start:.3f}s")  # 454
-    part2_start = time()
-    print(part2(puzzle_input), f"{time() - part2_start:.3f}s")  # 649
+    print_results(elapsed_time(part1, puzzle_input),
+                  elapsed_time(part2, puzzle_input))

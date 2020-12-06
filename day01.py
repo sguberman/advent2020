@@ -1,6 +1,7 @@
 from itertools import combinations
-from time import time
 from typing import Iterable, Tuple
+
+from utils import elapsed_time, print_results
 
 
 def find_n_numbers_totaling(n: int,
@@ -27,7 +28,5 @@ def part2(filename: str) -> int:
 
 if __name__ == '__main__':
     puzzle_input = 'input_day01.txt'
-    part1_start = time()
-    print(part1(puzzle_input), f"{time() - part1_start:.3f}s")  # 1016131
-    part2_start = time()
-    print(part2(puzzle_input), f"{time() - part2_start:.3f}s")  # 276432018
+    print_results(elapsed_time(part1, puzzle_input),
+                  elapsed_time(part2, puzzle_input))
