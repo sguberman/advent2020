@@ -1,3 +1,4 @@
+from time import time
 from typing import Iterator, List
 
 
@@ -31,5 +32,13 @@ def part2(filename):
 
 if __name__ == '__main__':
     puzzle_input = 'input_day06.txt'
-    print(part1(puzzle_input))  # 6630
-    print(part2(puzzle_input))  # 3437
+
+    part1_start = time()
+    part1_answer = part1(puzzle_input)  # 6630
+    part1_time = time() - part1_start
+    print(part1_answer, f"{part1_time:.6f}s")
+
+    part2_start = time()
+    part2_answer = part2(puzzle_input)  # 3437
+    part2_time = time() - part2_start
+    print(part2_answer, f"{part2_time:.6f}s")
