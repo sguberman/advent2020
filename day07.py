@@ -1,10 +1,9 @@
-from collections import defaultdict
 from typing import Dict, List, Tuple
 
 from utils import elapsed_time, print_results
 
 RuleDict = Dict[str, List[str]]
-ContainsCache = Dict[str, Dict[Tuple[str, str], bool]]
+ContainsCache = Dict[Tuple[str, str, str], bool]
 
 
 def read_rules(filename: str) -> RuleDict:
@@ -29,20 +28,20 @@ def does_contain(outer_bag: str,
                  target_bag: str,
                  filename: str,
                  rules: RuleDict,
-                 cache: ContainsCache = defaultdict(dict)) -> bool:
-    if (outer_bag, target_bag) in cache[filename]:
-        return cache[filename][(outer_bag, target_bag)]
+                 cache: ContainsCache = {}) -> bool:
+    if (filename, outer_bag, target_bag) in cache:
+        return cache[(filename, outer_bag, target_bag)]
     else:
         inner_bags = rules[outer_bag]
         if target_bag in inner_bags:
-            cache[filename][(outer_bag, target_bag)] = True
+            cache[(filename, outer_bag, target_bag)] = True
             return True
         else:
             for inner_bag in inner_bags:
                 if does_contain(inner_bag, target_bag, filename, rules, cache):
-                    cache[filename][(outer_bag, target_bag)] = True
+                    cache[(filename, outer_bag, target_bag)] = True
                     return True
-            cache[filename][(outer_bag, target_bag)] = False
+            cache[(filename, outer_bag, target_bag)] = False
             return False
 
 
