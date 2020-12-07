@@ -32,17 +32,15 @@ def does_contain(target_bag: str,
     if (filename, outer_bag, target_bag) in cache:
         return cache[(filename, outer_bag, target_bag)]
     else:
-        inner_bags = rules[outer_bag]
-        if target_bag in inner_bags:
-            cache[(filename, outer_bag, target_bag)] = True
-            return True
-        else:
-            for inner_bag in inner_bags:
-                if does_contain(target_bag, inner_bag, filename, rules, cache):
-                    cache[(filename, outer_bag, target_bag)] = True
-                    return True
-            cache[(filename, outer_bag, target_bag)] = False
-            return False
+        for inner_bag in rules[outer_bag]:
+            if inner_bag == target_bag:
+                cache[(filename, outer_bag, target_bag)] = True
+                return True
+            elif does_contain(target_bag, inner_bag, filename, rules, cache):
+                cache[(filename, outer_bag, target_bag)] = True
+                return True
+        cache[(filename, outer_bag, target_bag)] = False
+        return False
 
 
 def number_contained(bag: str, rules: RuleDict) -> int:
