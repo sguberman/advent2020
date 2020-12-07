@@ -16,11 +16,11 @@ def groups(filename: str) -> Iterator[List[str]]:
 
 
 def anyone_answers(group: List[str]) -> set:
-    return set.union(*[set(x) for x in group])
+    return set.union(*(set(x) for x in group))
 
 
 def everyone_answers(group: List[str]) -> set:
-    return set.intersection(*[set(x) for x in group])
+    return set.intersection(*(set(x) for x in group))
 
 
 def part1(filename: str) -> int:
@@ -33,5 +33,5 @@ def part2(filename: str) -> int:
 
 if __name__ == '__main__':
     puzzle_input = 'input_day06.txt'
-    print_results(elapsed_time(part1, puzzle_input),
-                  elapsed_time(part2, puzzle_input))
+    print_results(elapsed_time(part1, puzzle_input),  # 6630
+                  elapsed_time(part2, puzzle_input))  # 3437
