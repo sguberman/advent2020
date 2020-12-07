@@ -24,7 +24,7 @@ def read_rules(filename: str) -> RuleDict:
     return rule_dict
 
 
-def contains(rules: RuleDict, outer: str, inner: str) -> bool:
+def does_contain(rules: RuleDict, outer: str, inner: str) -> bool:
     if (outer, inner) in CONTAINS_CACHE:
         return CONTAINS_CACHE[(outer, inner)]
     else:
@@ -34,20 +34,26 @@ def contains(rules: RuleDict, outer: str, inner: str) -> bool:
             return True
         else:
             for child in children:
-                if contains(rules, child, inner):
+                if does_contain(rules, child, inner):
                     CONTAINS_CACHE[(outer, inner)] = True
                     return True
             CONTAINS_CACHE[(outer, inner)] = False
             return False
 
 
+def number_contained(rules: RuleDict, bag: str) -> int:
+    children = rules[bag]
+    return len(children) + sum(number_contained(rules, child) for child in children)
+
+
 def part1(filename: str) -> int:
     rules = read_rules(filename)
-    return sum(contains(rules, bag, 'shiny gold') for bag in rules)
+    return sum(does_contain(rules, bag, 'shiny gold') for bag in rules)
 
 
 def part2(filename: str) -> int:
-    pass
+    rules = read_rules(filename)
+    return number_contained(rules, 'shiny gold')
 
 
 if __name__ == '__main__':
