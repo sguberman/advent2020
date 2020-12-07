@@ -1,54 +1,60 @@
+from collections import defaultdict
 from typing import Dict, List, Tuple
 
 from utils import elapsed_time, print_results
 
 RuleDict = Dict[str, List[str]]
-
-CONTAINS_CACHE: Dict[Tuple[str, str], bool] = {}
+ContainsCache = Dict[str, Dict[Tuple[str, str], bool]]
 
 
 def read_rules(filename: str) -> RuleDict:
-    rule_dict: RuleDict = {}
+    rules: RuleDict = {}
     with open(filename) as f:
         for line in f:
             lhs, rhs = line.strip().split(' contain ')
-            outer = ' '.join(lhs.split()[:2])
+            adj, color, _ = lhs.split()
+            outer_bag = f"{adj} {color}"
             if rhs.startswith('no'):
-                rule_dict[outer] = []
-                continue
-            inners = []
-            for inner in rhs.split(', '):
-                num, adj, color, _ = inner.split()
-                inners.extend(int(num) * [f"{adj} {color}"])
-            rule_dict[outer] = inners
-    return rule_dict
+                rules[outer_bag] = []
+            else:
+                inner_bags = []
+                for inner_bag in rhs.split(', '):
+                    num, adj, color, _ = inner_bag.split()
+                    inner_bags.extend(int(num) * [f"{adj} {color}"])
+                rules[outer_bag] = inner_bags
+    return rules
 
 
-def does_contain(rules: RuleDict, outer: str, inner: str) -> bool:
-    if (outer, inner) in CONTAINS_CACHE:
-        return CONTAINS_CACHE[(outer, inner)]
+def does_contain(outer_bag: str,
+                 target_bag: str,
+                 filename: str,
+                 rules: RuleDict,
+                 cache: ContainsCache = defaultdict(dict)) -> bool:
+    if (outer_bag, target_bag) in cache[filename]:
+        return cache[filename][(outer_bag, target_bag)]
     else:
-        children = rules[outer]
-        if inner in children:
-            CONTAINS_CACHE[(outer, inner)] = True
+        inner_bags = rules[outer_bag]
+        if target_bag in inner_bags:
+            cache[filename][(outer_bag, target_bag)] = True
             return True
         else:
-            for child in children:
-                if does_contain(rules, child, inner):
-                    CONTAINS_CACHE[(outer, inner)] = True
+            for inner_bag in inner_bags:
+                if does_contain(inner_bag, target_bag, filename, rules, cache):
+                    cache[filename][(outer_bag, target_bag)] = True
                     return True
-            CONTAINS_CACHE[(outer, inner)] = False
+            cache[filename][(outer_bag, target_bag)] = False
             return False
 
 
 def number_contained(rules: RuleDict, bag: str) -> int:
     children = rules[bag]
-    return len(children) + sum(number_contained(rules, child) for child in children)
+    return (len(children) +
+            sum(number_contained(rules, child) for child in children))
 
 
 def part1(filename: str) -> int:
     rules = read_rules(filename)
-    return sum(does_contain(rules, bag, 'shiny gold') for bag in rules)
+    return sum(does_contain(bag, 'shiny gold', filename, rules) for bag in rules)
 
 
 def part2(filename: str) -> int:
@@ -58,5 +64,5 @@ def part2(filename: str) -> int:
 
 if __name__ == '__main__':
     puzzle_input = 'input_day07.txt'
-    print_results(elapsed_time(part1, puzzle_input),
-                  elapsed_time(part2, puzzle_input))
+    print_results(elapsed_time(part1, puzzle_input),  # 126
+                  elapsed_time(part2, puzzle_input))  # 220149
