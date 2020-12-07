@@ -2,26 +2,25 @@ from typing import Dict, List, Tuple
 
 from utils import elapsed_time, print_results
 
+Rule = Tuple[str, List[str]]
 RuleDict = Dict[str, List[str]]
 ContainsCache = Dict[Tuple[str, str, str], bool]
 
 
+def parse_rule(line: str) -> Rule:
+    lhs, rhs = line.strip().split(' contain ')
+    adj, color, _ = lhs.split()
+    outer_bag = f"{adj} {color}"
+    inner_bags = []
+    if not rhs.startswith('no'):
+        for inner_bag in rhs.split(', '):
+            num, adj, color, _ = inner_bag.split()
+            inner_bags.extend(int(num) * [f"{adj} {color}"])
+    return outer_bag, inner_bags
+
+
 def read_rules(filename: str) -> RuleDict:
-    rules: RuleDict = {}
-    with open(filename) as f:
-        for line in f:
-            lhs, rhs = line.strip().split(' contain ')
-            adj, color, _ = lhs.split()
-            outer_bag = f"{adj} {color}"
-            if rhs.startswith('no'):
-                rules[outer_bag] = []
-            else:
-                inner_bags = []
-                for inner_bag in rhs.split(', '):
-                    num, adj, color, _ = inner_bag.split()
-                    inner_bags.extend(int(num) * [f"{adj} {color}"])
-                rules[outer_bag] = inner_bags
-    return rules
+    return dict(parse_rule(line) for line in open(filename))
 
 
 def does_contain(target_bag: str,
