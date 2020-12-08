@@ -75,8 +75,8 @@ def part1(filename: str) -> int:
 
 def part2(filename: str) -> Optional[int]:
     orig_program = read_program(filename)
-    alternate_programs = chain(swap_ops(orig_program, nop, jmp),
-                               swap_ops(orig_program, jmp, nop))
+    alternate_programs = chain(swap_ops(orig_program, jmp, nop),
+                               swap_ops(orig_program, nop, jmp))
     for program in alternate_programs:
         _, acc, exit_code = run_program_until_loop(program)
         if exit_code == 0:  # ran to completion without looping
