@@ -1,4 +1,5 @@
-from typing import Callable, List, Tuple
+from itertools import chain
+from typing import Callable, Iterator, List, Optional, Tuple
 
 from utils import elapsed_time, print_results
 
@@ -6,6 +7,7 @@ State = Tuple[int, int]
 Op = Callable[[int, int, int], State]
 Instruction = Tuple[Op, int]
 Program = List[Instruction]
+ExitState = Tuple[int, int, int]
 
 
 def acc(arg: int, step: int, acc: int) -> State:
@@ -43,25 +45,46 @@ def execute_instruction(instruction: Instruction,
     return op(arg, step, acc)
 
 
-def run_program_until_loop(program: Program) -> State:
+def run_program_until_loop(program: Program) -> ExitState:
     step, acc = 0, 0
     visited = set()
     while step not in visited:
         visited.add(step)
-        step, acc = execute_instruction(program[step], step, acc)
-    return step, acc
+        try:
+            instruction = program[step]
+        except IndexError:
+            return step, acc, 0  # exit at end of program
+        step, acc = execute_instruction(instruction, step, acc)
+    return step, acc, -1  # halt at loop
+
+
+def swap_ops(program: Program, orig_op: Op, new_op: Op) -> Iterator[Program]:
+    for step, instruction in enumerate(program):
+        op, arg = instruction
+        if op == orig_op:
+            new_instruction = (new_op, arg)
+            new_program = program.copy()
+            new_program[step] = new_instruction
+            yield new_program
 
 
 def part1(filename: str) -> int:
-    _, acc = run_program_until_loop(read_program(filename))
+    _, acc, _ = run_program_until_loop(read_program(filename))
     return acc
 
 
-def part2(filename: str) -> int:
-    pass
+def part2(filename: str) -> Optional[int]:
+    orig_program = read_program(filename)
+    alternate_programs = chain(swap_ops(orig_program, nop, jmp),
+                               swap_ops(orig_program, jmp, nop))
+    for program in alternate_programs:
+        _, acc, exit_code = run_program_until_loop(program)
+        if exit_code == 0:  # ran to completion without looping
+            return acc
+    return None
 
 
 if __name__ == '__main__':
     puzzle_input = 'input_day08.txt'
-    print_results(elapsed_time(part1, puzzle_input),
-                  elapsed_time(part2, puzzle_input))
+    print_results(elapsed_time(part1, puzzle_input),  # 1782
+                  elapsed_time(part2, puzzle_input))  # 797
