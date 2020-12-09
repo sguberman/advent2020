@@ -25,12 +25,8 @@ def update_sums(sums: Dict[int, set], new_number: int) -> Dict[int, set]:
     return sums
 
 
-def is_valid2(number: int, sums: Dict[int, set]) -> bool:
+def is_valid(number: int, sums: Dict[int, set]) -> bool:
     return any(number in value for value in sums.values())
-
-
-def is_valid(number: int, preamble: Iterable[int]) -> bool:
-    return number in (sum(combo) for combo in combinations(preamble, 2))
 
 
 def first_invalid(numbers: Iterable[int],
@@ -38,7 +34,7 @@ def first_invalid(numbers: Iterable[int],
     preamble = islice(numbers, preamble_len)
     sums = all_sums(preamble)
     for new_number in numbers:
-        if not is_valid2(new_number, sums):
+        if not is_valid(new_number, sums):
             return new_number
         else:
             sums = update_sums(sums, new_number)
@@ -50,7 +46,7 @@ def part1(filename: str, preamble_len: int = 25) -> Optional[int]:
     return first_invalid(numbers, preamble_len)
 
 
-def part2(filename: str) -> int:
+def part2(filename: str, preamble_len: int = 25) -> int:
     pass
 
 
