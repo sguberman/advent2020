@@ -39,8 +39,8 @@ def test_part1(puzzle_input, preamble_len, answer):
 
 
 @pytest.mark.parametrize('puzzle_input, preamble_len, answer', [
-    (TEST_INPUT, 5, 0),
-    (PUZZLE_INPUT, 25, 0),
+    (TEST_INPUT, 5, 62),
+    (PUZZLE_INPUT, 25, 75678618),
 ])
 def test_part2(puzzle_input, preamble_len, answer):
     assert part2(puzzle_input, preamble_len) == answer
