@@ -1,4 +1,5 @@
 from collections import Counter
+from itertools import combinations
 from typing import Iterable, List
 
 from utils import elapsed_time, print_results
@@ -12,6 +13,20 @@ def joltage_differences(joltages: List[int]) -> Iterable[int]:
     return (b - a for a, b in zip(joltages, joltages[1:]))
 
 
+def is_valid(arrangement: List[int]) -> bool:
+    return all(difference <= 3
+               for difference in joltage_differences(arrangement))
+
+
+def all_arrangements(adapters: List[int]) -> Iterable[List[int]]:
+    outlet = 0
+    device = max(adapters) + 3
+    min_len = (device - outlet) // 3
+    for r in range(min_len, len(adapters)):
+        for arrangement in combinations(adapters, r):
+            yield [outlet] + list(arrangement) + [device]
+
+
 def part1(filename: str) -> int:
     adapters = connected_adapters(filename)
     outlet = 0
@@ -22,7 +37,9 @@ def part1(filename: str) -> int:
 
 
 def part2(filename: str) -> int:
-    pass
+    adapters = connected_adapters(filename)
+    return sum(is_valid(arrangement)
+               for arrangement in all_arrangements(adapters))
 
 
 if __name__ == '__main__':
