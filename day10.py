@@ -1,6 +1,6 @@
 from collections import Counter
 from itertools import combinations
-from typing import Iterable, List
+from typing import Dict, Iterable, List
 
 from utils import elapsed_time, print_results
 
@@ -13,18 +13,23 @@ def joltage_differences(joltages: List[int]) -> Iterable[int]:
     return (b - a for a, b in zip(joltages, joltages[1:]))
 
 
-def is_valid(arrangement: List[int]) -> bool:
-    return all(difference <= 3
-               for difference in joltage_differences(arrangement))
+def build_connection_graph(adapters: List[int]) -> Dict[int, List[int]]:
+    neighbors = {}
+    for adapter in adapters:
+        potential_neighbors = [adapter + x for x in (1, 2, 3)]
+        neighbors[adapter] = [n for n in potential_neighbors if n in adapters]
+    return neighbors
 
 
-def all_arrangements(adapters: List[int]) -> Iterable[List[int]]:
-    outlet = 0
-    device = max(adapters) + 3
-    min_len = (device - outlet) // 3
-    for r in range(min_len, len(adapters)):
-        for arrangement in combinations(adapters, r):
-            yield [outlet] + list(arrangement) + [device]
+def count_paths(neighbors_graph: Dict[int, List[int]]) -> Dict[int, int]:
+    paths = {0: 1}
+    for adapter, neighbors in neighbors_graph.items():
+        for neighbor in neighbors:
+            if neighbor in paths:
+                paths[neighbor] += paths[adapter]
+            else:
+                paths[neighbor] = paths[adapter]
+    return paths
 
 
 def part1(filename: str) -> int:
@@ -38,8 +43,12 @@ def part1(filename: str) -> int:
 
 def part2(filename: str) -> int:
     adapters = connected_adapters(filename)
-    return sum(is_valid(arrangement)
-               for arrangement in all_arrangements(adapters))
+    outlet = 0
+    device = max(adapters) + 3
+    joltages = [outlet] + adapters + [device]
+    neighbors = build_connection_graph(joltages)
+    num_paths = count_paths(neighbors)
+    return num_paths[device]
 
 
 if __name__ == '__main__':
