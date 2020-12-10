@@ -3,7 +3,8 @@ import pytest
 from day10 import part1, part2
 
 PUZZLE_INPUT = 'input_day10.txt'
-TEST_INPUT = 'test_input_day10.txt'
+TEST_INPUT1 = 'test_input_day10_short.txt'
+TEST_INPUT2 = 'test_input_day10_long.txt'
 
 EXAMPLE1 = [
     16,
@@ -55,7 +56,8 @@ EXAMPLE2 = [
 
 
 @pytest.mark.parametrize('puzzle_input, answer', [
-    (TEST_INPUT, 0),
+    (TEST_INPUT1, 0),
+    (TEST_INPUT2, 0),
     (PUZZLE_INPUT, 0),
 ])
 def test_part1(puzzle_input, answer):
@@ -63,7 +65,8 @@ def test_part1(puzzle_input, answer):
 
 
 @pytest.mark.parametrize('puzzle_input, answer', [
-    (TEST_INPUT, 0),
+    (TEST_INPUT1, 0),
+    (TEST_INPUT2, 0),
     (PUZZLE_INPUT, 0),
 ])
 def test_part2(puzzle_input, answer):
