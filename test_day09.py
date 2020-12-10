@@ -2,7 +2,8 @@ from copy import deepcopy
 
 import pytest
 
-from day09 import all_sums, first_invalid, is_valid, part1, part2, update_sums
+from day09 import (first_group_with_sum, first_invalid, is_valid, part1, part2,
+                   preamble_sums, update_sums)
 
 PUZZLE_INPUT = 'input_day09.txt'
 TEST_INPUT = 'test_input_day09.txt'
@@ -47,8 +48,8 @@ def test_part2(puzzle_input, preamble_len, answer):
 
 
 @pytest.mark.parametrize('numbers, expected', [
-    ((x for x in EXAMPLE), 127),
-    ((x for x in EXAMPLE[:14]), None),
+    (EXAMPLE, 127),
+    (EXAMPLE[:14], None),
 ])
 def test_first_invalid(numbers, expected):
     assert first_invalid(numbers, 5) == expected
@@ -69,8 +70,8 @@ UPDATED_SUMS = {
 }
 
 
-def test_all_sums():
-    assert all_sums(PREAMBLE) == PREAMBLE_SUMS
+def test_preamble_sums():
+    assert preamble_sums(PREAMBLE) == PREAMBLE_SUMS
 
 
 def test_update_sums():
@@ -87,3 +88,7 @@ def test_update_sums():
 ])
 def test_is_valid(number, sums, expected):
     assert is_valid(number, sums) == expected
+
+
+def test_first_group_with_sum():
+    assert first_group_with_sum(127, EXAMPLE) == (15, 25, 47, 40)
