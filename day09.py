@@ -1,6 +1,6 @@
 from collections import defaultdict
 from itertools import combinations, islice
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, List
 
 from utils import elapsed_time, print_results
 
@@ -30,7 +30,7 @@ def is_valid(number: int, sums: Dict[int, set]) -> bool:
 
 
 def first_invalid(numbers: Iterable[int],
-                  preamble_len: int = 25) -> Optional[int]:
+                  preamble_len: int = 25) -> int:
     preamble = islice(numbers, preamble_len)
     sums = all_sums(preamble)
     for new_number in numbers:
@@ -38,28 +38,26 @@ def first_invalid(numbers: Iterable[int],
             return new_number
         else:
             sums = update_sums(sums, new_number)
-    return None
 
 
 def group_with_sum(target_sum: int,
-                   numbers: List[int]) -> Optional[Iterable[int]]:
+                   numbers: List[int]) -> Iterable[int]:
     for group_size in range(2, len(numbers)):
         for group in zip(*(numbers[i:] for i in range(group_size))):
             if sum(group) == target_sum:
                 return group
-    return None
 
 
-def part1(filename: str, preamble_len: int = 25) -> Optional[int]:
+def part1(filename: str, preamble_len: int = 25) -> int:
     numbers = stream_numbers(filename)
     return first_invalid(numbers, preamble_len)
 
 
-def part2(filename: str, preamble_len: int = 25) -> Optional[int]:
+def part2(filename: str, preamble_len: int = 25) -> int:
     target = part1(filename, preamble_len)
     numbers = list(stream_numbers(filename))
     group = group_with_sum(target, numbers)
-    return min(group) + max(group) if group else None
+    return min(group) + max(group)
 
 
 if __name__ == '__main__':
