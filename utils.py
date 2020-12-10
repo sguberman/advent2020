@@ -1,10 +1,10 @@
-from time import time
+from time import perf_counter
 
 
 def elapsed_time(fn, *args, **kwargs):
-    start = time()
+    start = perf_counter()
     result = fn(*args, **kwargs)
-    end = time()
+    end = perf_counter()
     return result, end - start
 
 

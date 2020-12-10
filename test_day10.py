@@ -56,18 +56,18 @@ EXAMPLE2 = [
 
 
 @pytest.mark.parametrize('puzzle_input, answer', [
-    (TEST_INPUT1, 0),
-    (TEST_INPUT2, 0),
-    (PUZZLE_INPUT, 0),
+    (TEST_INPUT1, 35),
+    (TEST_INPUT2, 220),
+    (PUZZLE_INPUT, 1700),
 ])
 def test_part1(puzzle_input, answer):
     assert part1(puzzle_input) == answer
 
 
 @pytest.mark.parametrize('puzzle_input, answer', [
-    (TEST_INPUT1, 0),
-    (TEST_INPUT2, 0),
-    (PUZZLE_INPUT, 0),
+    (TEST_INPUT1, 8),
+    (TEST_INPUT2, 19208),
+    (PUZZLE_INPUT, 12401793332096),
 ])
 def test_part2(puzzle_input, answer):
     assert part2(puzzle_input) == answer

@@ -53,5 +53,5 @@ def part2(filename: str) -> int:
 
 if __name__ == '__main__':
     puzzle_input = 'input_day10.txt'
-    print_results(elapsed_time(part1, puzzle_input),
-                  elapsed_time(part2, puzzle_input))
+    print_results(elapsed_time(part1, puzzle_input),  # 1700
+                  elapsed_time(part2, puzzle_input))  # 12401793332096
