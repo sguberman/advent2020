@@ -152,20 +152,20 @@ ROUND6_2 = [
 ]
 
 
-@pytest.mark.parametrize('puzzle_input, answer', [
-    (TEST_INPUT, 37),
-    (PUZZLE_INPUT, 2441),
+@pytest.mark.parametrize('puzzle_input, rounds, answer', [
+    (TEST_INPUT, 5, 37),
+    (PUZZLE_INPUT, 95, 2441),
 ])
-def test_part1(puzzle_input, answer):
-    assert part1(puzzle_input) == answer
+def test_part1(puzzle_input, rounds, answer):
+    assert part1(puzzle_input) == (answer, rounds)
 
 
-@pytest.mark.parametrize('puzzle_input, answer', [
-    (TEST_INPUT, 26),
-    #(PUZZLE_INPUT, 0),
+@pytest.mark.parametrize('puzzle_input, rounds, answer', [
+    (TEST_INPUT, 6, 26),
+    (PUZZLE_INPUT, 88, 2190),
 ])
-def test_part2(puzzle_input, answer):
-    assert part2(puzzle_input) == answer
+def test_part2(puzzle_input, rounds, answer):
+    assert part2(puzzle_input) == (answer, rounds)
 
 
 @pytest.mark.parametrize('state, expected', [
@@ -258,8 +258,8 @@ def test_count_visible_neighbors(i, j, state, expected):
 
 
 @pytest.mark.parametrize('state, max_neighbors, count_fn, expected', [
-    (EXAMPLE, 4, count_adjacent_neighbors, ROUND5_1),
-    (EXAMPLE, 5, count_visible_neighbors, ROUND6_2),
+    (EXAMPLE, 4, count_adjacent_neighbors, (ROUND5_1, 5)),
+    (EXAMPLE, 5, count_visible_neighbors, (ROUND6_2, 6)),
 ])
 def test_simulate_to_end(state, max_neighbors, count_fn, expected):
     assert simulate_to_end(state, max_neighbors, count_fn) == expected

@@ -3,7 +3,7 @@ from typing import Callable, List, Optional, Tuple
 from utils import elapsed_time, print_results
 
 State = List[str]
-CountFn = Callable[[int, int, State, int], int]
+CountFn = Callable[[int, int, State, Optional[int]], int]
 
 FLOOR = '.'
 EMPTY = 'L'
@@ -19,12 +19,16 @@ def read_seats(filename: str) -> State:
     return open(filename).read().splitlines()
 
 
+def in_bounds(row: int, col: int, state: State) -> bool:
+    return (0 <= row < len(state)) and (0 <= col < len(state[0]))
+
+
 def count_adjacent_neighbors(i: int, j: int, state: State,
                              max_neighbors: Optional[int] = None) -> int:
     count = 0
     for (ns, ew) in DIRECTIONS:
         row, col = i + ns, j + ew
-        if (0 <= row < len(state)) and (0 <= col < len(state[0])):
+        if in_bounds(row, col, state):
             neighbor = state[row][col]
             if neighbor == OCCUPIED:
                 count += 1
@@ -38,7 +42,7 @@ def count_visible_neighbors(i: int, j: int, state: State,
     count = 0
     for (ns, ew) in DIRECTIONS:
         row, col = i + ns, j + ew
-        while (0 <= row < len(state)) and (0 <= col < len(state[0])):
+        while in_bounds(row, col, state):
             neighbor = state[row][col]
             if neighbor == OCCUPIED:
                 count += 1
@@ -66,40 +70,43 @@ def next_seat(seat: str, i: int, j: int, state: State, max_neighbors: int,
 
 def simulate_one_round(state: State, max_neighbors: int,
                        count_fn: CountFn) -> Tuple[State, State]:
-    next_state: State = []
-    for i, row in enumerate(state):
-        next_row = ''
-        for j, seat in enumerate(row):
-            next_row += next_seat(seat, i, j, state, max_neighbors, count_fn)
-        next_state.append(next_row)
+    next_state = [
+        ''.join(next_seat(seat, i, j, state, max_neighbors, count_fn)
+                for j, seat in enumerate(row))
+        for i, row in enumerate(state)
+    ]
     return state, next_state
 
 
 def simulate_to_end(state: State, max_neighbors: int,
-                    count_fn: CountFn) -> State:
+                    count_fn: CountFn) -> Tuple[State, int]:
     before, after = simulate_one_round(state, max_neighbors, count_fn)
+    rounds = 0
     while before != after:
         before, after = simulate_one_round(after, max_neighbors, count_fn)
-    return after
+        rounds += 1
+    return after, rounds
 
 
 def count_occupied_seats(state: State) -> int:
     return sum(sum(seat == OCCUPIED for seat in row) for row in state)
 
 
-def part1(filename: str) -> int:
+def part1(filename: str) -> Tuple[int, int]:
     initial_state = read_seats(filename)
-    final_state = simulate_to_end(initial_state, 4, count_adjacent_neighbors)
-    return count_occupied_seats(final_state)
+    final_state, rounds = simulate_to_end(
+        initial_state, 4, count_adjacent_neighbors)
+    return count_occupied_seats(final_state), rounds
 
 
-def part2(filename: str) -> int:
+def part2(filename: str) -> Tuple[int, int]:
     initial_state = read_seats(filename)
-    final_state = simulate_to_end(initial_state, 5, count_visible_neighbors)
-    return count_occupied_seats(final_state)
+    final_state, rounds = simulate_to_end(
+        initial_state, 5, count_visible_neighbors)
+    return count_occupied_seats(final_state), rounds
 
 
 if __name__ == '__main__':
     puzzle_input = 'input_day11.txt'
     print_results(elapsed_time(part1, puzzle_input),  # 2441
-                  elapsed_time(part2, puzzle_input))
+                  elapsed_time(part2, puzzle_input))  # 2190
