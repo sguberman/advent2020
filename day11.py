@@ -1,4 +1,4 @@
-from typing import Callable, List, Tuple
+from typing import Callable, List, Optional, Tuple
 
 from utils import elapsed_time, print_results
 
@@ -20,7 +20,7 @@ def read_seats(filename: str) -> State:
 
 
 def count_adjacent_neighbors(i: int, j: int, state: State,
-                             max_neighbors: int) -> int:
+                             max_neighbors: Optional[int] = None) -> int:
     count = 0
     for (ns, ew) in DIRECTIONS:
         row, col = i + ns, j + ew
@@ -28,13 +28,13 @@ def count_adjacent_neighbors(i: int, j: int, state: State,
             neighbor = state[i + ns][j + ew]
             if neighbor == OCCUPIED:
                 count += 1
-                if count > max_neighbors:  # optimization
+                if max_neighbors and count > max_neighbors:  # optimization
                     break
     return count
 
 
 def count_visible_neighbors(i: int, j: int, state: State,
-                            max_neighbors: int) -> int:
+                            max_neighbors: Optional[int] = None) -> int:
     return 0
 
 
@@ -44,7 +44,8 @@ def next_seat(seat: str, i: int, j: int, state: State, max_neighbors: int,
         return FLOOR
     elif (seat == EMPTY) and (count_fn(i, j, state, max_neighbors) == 0):
         return OCCUPIED
-    elif (seat == OCCUPIED) and (count_fn(i, j, state, max_neighbors) >= max_neighbors):
+    elif ((seat == OCCUPIED)
+          and (count_fn(i, j, state, max_neighbors)) >= max_neighbors):
         return EMPTY
     else:
         return seat
