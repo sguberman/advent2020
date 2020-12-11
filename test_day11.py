@@ -1,7 +1,8 @@
 import pytest
 
-from day11 import (count_neighbors, count_occupied_seats, next_seat, part1,
-                   part2, simulate_one_round, simulate_to_end)
+from day11 import (count_adjacent_neighbors, count_occupied_seats,
+                   count_visible_neighbors, next_seat, part1, part2,
+                   simulate_one_round, simulate_to_end)
 
 PUZZLE_INPUT = 'input_day11.txt'
 TEST_INPUT = 'test_input_day11.txt'
@@ -99,16 +100,16 @@ def test_count_occupied_seats():
     assert count_occupied_seats(ROUND5) == 37
 
 
-@pytest.mark.parametrize('state, next_state', [
-    (EXAMPLE, ROUND1),
-    (ROUND1, ROUND2),
-    (ROUND2, ROUND3),
-    (ROUND3, ROUND4),
-    (ROUND4, ROUND5),
-    (ROUND5, ROUND5),
+@pytest.mark.parametrize('state, max_neighbors, count_fn, next_state', [
+    (EXAMPLE, 4, count_adjacent_neighbors, ROUND1),
+    (ROUND1, 4, count_adjacent_neighbors, ROUND2),
+    (ROUND2, 4, count_adjacent_neighbors, ROUND3),
+    (ROUND3, 4, count_adjacent_neighbors, ROUND4),
+    (ROUND4, 4, count_adjacent_neighbors, ROUND5),
+    (ROUND5, 4, count_adjacent_neighbors, ROUND5),
 ])
-def test_simulate_one_round(state, next_state):
-    before, after = simulate_one_round(state)
+def test_simulate_one_round(state, max_neighbors, count_fn, next_state):
+    before, after = simulate_one_round(state, max_neighbors, count_fn)
     assert before == state
     assert after == next_state
 
@@ -133,5 +134,12 @@ def test_simulate_one_round(state, next_state):
     (9, 9, ROUND4, 1),
     (9, 9, ROUND5, 1),
 ])
-def test_count_neighbors(i, j, state, expected):
-    assert count_neighbors(i, j, state) == expected
+def test_count_adjacent_neighbors(i, j, state, expected):
+    assert count_adjacent_neighbors(i, j, state) == expected
+
+
+@pytest.mark.parametrize('state, max_neighbors, count_fn, expected', [
+    (EXAMPLE, 4, count_adjacent_neighbors, ROUND5),
+])
+def test_simulate_to_end(state, max_neighbors, count_fn, expected):
+    assert simulate_to_end(state, max_neighbors, count_fn) == expected
