@@ -25,7 +25,7 @@ def count_adjacent_neighbors(i: int, j: int, state: State,
     for (ns, ew) in DIRECTIONS:
         row, col = i + ns, j + ew
         if (0 <= row < len(state)) and (0 <= col < len(state[0])):
-            neighbor = state[i + ns][j + ew]
+            neighbor = state[row][col]
             if neighbor == OCCUPIED:
                 count += 1
                 if max_neighbors and count > max_neighbors:  # optimization
@@ -35,7 +35,20 @@ def count_adjacent_neighbors(i: int, j: int, state: State,
 
 def count_visible_neighbors(i: int, j: int, state: State,
                             max_neighbors: Optional[int] = None) -> int:
-    return 0
+    count = 0
+    for (ns, ew) in DIRECTIONS:
+        row, col = i + ns, j + ew
+        while (0 <= row < len(state)) and (0 <= col < len(state[0])):
+            neighbor = state[row][col]
+            if neighbor == OCCUPIED:
+                count += 1
+                break  # check next direction
+            elif neighbor == EMPTY:
+                break  # check next direction
+            row, col = row + ns, col + ew
+        if max_neighbors and count > max_neighbors:  # optimization
+            break
+    return count
 
 
 def next_seat(seat: str, i: int, j: int, state: State, max_neighbors: int,

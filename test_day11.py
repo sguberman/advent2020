@@ -232,12 +232,12 @@ SEES_8 = [
     '#........',
     '...#.....',
 ]
-SEES_1 = [
+SEES_0_1 = [
     '.............',
     '.L.L.#.#.#.#.',
     '.............',
 ]
-SEES_0 = [
+SEES_0_2 = [
     '.##.##.',
     '#.#.#.#',
     '##...##',
@@ -250,8 +250,8 @@ SEES_0 = [
 
 @pytest.mark.parametrize('i, j, state, expected', [
     (4, 3, SEES_8, 8),
-    (1, 1, SEES_1, 1),
-    (3, 3, SEES_0, 0),
+    (1, 1, SEES_0_1, 0),
+    (3, 3, SEES_0_2, 0),
 ])
 def test_count_visible_neighbors(i, j, state, expected):
     assert count_visible_neighbors(i, j, state) == expected
