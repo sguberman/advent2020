@@ -114,28 +114,28 @@ def test_simulate_one_round(state, max_neighbors, count_fn, next_state):
     assert after == next_state
 
 
-@pytest.mark.parametrize('i, j, state, expected', [
-    (0, 0, EXAMPLE, 0),
-    (0, 0, ROUND1, 2),
-    (0, 0, ROUND2, 1),
-    (0, 0, ROUND3, 1),
-    (0, 0, ROUND4, 1),
-    (0, 0, ROUND5, 1),
-    (1, 4, EXAMPLE, 0),
-    (1, 4, ROUND1, 5),
-    (1, 4, ROUND2, 0),
-    (1, 4, ROUND3, 3),
-    (1, 4, ROUND4, 0),
-    (1, 4, ROUND5, 0),
-    (9, 9, EXAMPLE, 0),
-    (9, 9, ROUND1, 2),
-    (9, 9, ROUND2, 1),
-    (9, 9, ROUND3, 1),
-    (9, 9, ROUND4, 1),
-    (9, 9, ROUND5, 1),
+@pytest.mark.parametrize('i, j, state, max_neighbors, expected', [
+    (0, 0, EXAMPLE, 4, 0),
+    (0, 0, ROUND1, 4, 2),
+    (0, 0, ROUND2, 4, 1),
+    (0, 0, ROUND3, 4, 1),
+    (0, 0, ROUND4, 4, 1),
+    (0, 0, ROUND5, 4, 1),
+    (1, 4, EXAMPLE, 4, 0),
+    (1, 4, ROUND1, 4, 5),
+    (1, 4, ROUND2, 4, 0),
+    (1, 4, ROUND3, 4, 3),
+    (1, 4, ROUND4, 4, 0),
+    (1, 4, ROUND5, 4, 0),
+    (9, 9, EXAMPLE, 4, 0),
+    (9, 9, ROUND1, 4, 2),
+    (9, 9, ROUND2, 4, 1),
+    (9, 9, ROUND3, 4, 1),
+    (9, 9, ROUND4, 4, 1),
+    (9, 9, ROUND5, 4, 1),
 ])
-def test_count_adjacent_neighbors(i, j, state, expected):
-    assert count_adjacent_neighbors(i, j, state) == expected
+def test_count_adjacent_neighbors(i, j, state, max_neighbors, expected):
+    assert count_adjacent_neighbors(i, j, state, max_neighbors) == expected
 
 
 @pytest.mark.parametrize('state, max_neighbors, count_fn, expected', [

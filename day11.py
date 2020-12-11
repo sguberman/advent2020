@@ -3,6 +3,7 @@ from typing import Callable, List, Tuple
 from utils import elapsed_time, print_results
 
 State = List[str]
+CountFn = Callable[[int, int, State, int], int]
 
 FLOOR = '.'
 EMPTY = 'L'
@@ -18,7 +19,8 @@ def read_seats(filename: str) -> State:
     return open(filename).read().splitlines()
 
 
-def count_adjacent_neighbors(i: int, j: int, state: State) -> int:
+def count_adjacent_neighbors(i: int, j: int, state: State,
+                             max_neighbors: int) -> int:
     count = 0
     for (ns, ew) in DIRECTIONS:
         row, col = i + ns, j + ew
@@ -26,27 +28,30 @@ def count_adjacent_neighbors(i: int, j: int, state: State) -> int:
             neighbor = state[i + ns][j + ew]
             if neighbor == OCCUPIED:
                 count += 1
+                if count > max_neighbors:  # optimization
+                    break
     return count
 
 
-def count_visible_neighbors(i: int, j: int, state: State) -> int:
-    pass
+def count_visible_neighbors(i: int, j: int, state: State,
+                            max_neighbors: int) -> int:
+    return 0
 
 
 def next_seat(seat: str, i: int, j: int, state: State, max_neighbors: int,
-              count_fn: Callable[[int, int, State], int]) -> str:
+              count_fn: CountFn) -> str:
     if seat == FLOOR:
         return FLOOR
-    elif (seat == EMPTY) and (count_fn(i, j, state) == 0):
+    elif (seat == EMPTY) and (count_fn(i, j, state, max_neighbors) == 0):
         return OCCUPIED
-    elif (seat == OCCUPIED) and (count_fn(i, j, state) >= max_neighbors):
+    elif (seat == OCCUPIED) and (count_fn(i, j, state, max_neighbors) >= max_neighbors):
         return EMPTY
     else:
         return seat
 
 
 def simulate_one_round(state: State, max_neighbors: int,
-                       count_fn: Callable[[int, int, State], int]) -> Tuple[State, State]:
+                       count_fn: CountFn) -> Tuple[State, State]:
     next_state: State = []
     for i, row in enumerate(state):
         next_row = ''
@@ -57,7 +62,7 @@ def simulate_one_round(state: State, max_neighbors: int,
 
 
 def simulate_to_end(state: State, max_neighbors: int,
-                    count_fn: Callable[[int, int, State], int]) -> State:
+                    count_fn: CountFn) -> State:
     before, after = simulate_one_round(state, max_neighbors, count_fn)
     while before != after:
         before, after = simulate_one_round(after, max_neighbors, count_fn)
