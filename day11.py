@@ -1,8 +1,10 @@
+import time
+from functools import partial
 from typing import Callable, Iterator, List, Tuple
 
 from utils import elapsed_time, print_results
 
-State = List[str]
+State = List[List[str]]
 CountFn = Callable[[int, int, State], int]
 
 FLOOR = '.'
@@ -16,7 +18,7 @@ DIRECTIONS = [
 
 
 def read_seats(filename: str) -> State:
-    return open(filename).read().splitlines()
+    return [[x for x in line.strip()] for line in open(filename)]
 
 
 def in_bounds(row: int, col: int, state: State) -> bool:
@@ -48,12 +50,12 @@ def count_visible_neighbors(i: int, j: int, state: State) -> int:
                for direction in DIRECTIONS)
 
 
-def new_seat(seat: str,
-             i: int,
+def new_seat(i: int,
              j: int,
              state: State,
              max_neighbors: int,
              count_fn: CountFn) -> str:
+    seat = state[i][j]
     if seat == FLOOR:
         return FLOOR
     elif (seat == EMPTY) and (count_fn(i, j, state) == 0):
@@ -67,12 +69,11 @@ def new_seat(seat: str,
 def simulate_one_round(state: State,
                        max_neighbors: int,
                        count_fn: CountFn) -> Tuple[State, State]:
-    new_state = []
-    for i, row in enumerate(state):
-        new_row = ''
-        for j, seat in enumerate(row):
-            new_row += new_seat(seat, i, j, state, max_neighbors, count_fn)
-        new_state.append(new_row)
+    _new_seat = partial(new_seat, state=state,
+                        max_neighbors=max_neighbors, count_fn=count_fn)
+    rows = range(len(state))
+    cols = range(len(state[0]))
+    new_state = [[_new_seat(i, j) for j in cols] for i in rows]
     return state, new_state
 
 
@@ -81,7 +82,10 @@ def simulate_to_end(state: State,
                     count_fn: CountFn) -> State:
     before, after = simulate_one_round(state, max_neighbors, count_fn)
     while before != after:
+        start = time.perf_counter()
         before, after = simulate_one_round(after, max_neighbors, count_fn)
+        end = time.perf_counter()
+        print(f"{end - start:.6f}")
     return after
 
 

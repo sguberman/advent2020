@@ -152,6 +152,10 @@ ROUND6_2 = [
 ]
 
 
+def _stringify(state):
+    return [''.join(row) for row in state]
+
+
 @pytest.mark.parametrize('puzzle_input, answer', [
     (TEST_INPUT, 37),
     (PUZZLE_INPUT, 2441),
@@ -193,8 +197,8 @@ def test_count_occupied_seats(state, expected):
 ])
 def test_simulate_one_round(state, max_neighbors, count_fn, next_state):
     before, after = simulate_one_round(state, max_neighbors, count_fn)
-    assert before == state
-    assert after == next_state
+    assert _stringify(before) == state
+    assert _stringify(after) == next_state
 
 
 @pytest.mark.parametrize('i, j, state, expected', [
@@ -262,4 +266,5 @@ def test_count_visible_neighbors(i, j, state, expected):
     (EXAMPLE, 5, count_visible_neighbors, ROUND6_2),
 ])
 def test_simulate_to_end(state, max_neighbors, count_fn, expected):
-    assert simulate_to_end(state, max_neighbors, count_fn) == expected
+    state = simulate_to_end(state, max_neighbors, count_fn)
+    assert _stringify(state) == expected
