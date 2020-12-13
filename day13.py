@@ -4,12 +4,21 @@ from typing import List, Tuple
 from utils import elapsed_time, print_results
 
 
-def parse_input(filename: str) -> Tuple[int, List[int]]:
+def parse_input1(filename: str) -> Tuple[int, List[int]]:
     with open(filename) as f:
         earliest_departure = int(f.readline())
         buses_in_service = [int(x)
                             for x in f.readline().split(',') if x != 'x']
     return earliest_departure, buses_in_service
+
+
+def parse_input2(filename: str) -> List[Tuple[int, int]]:
+    with open(filename) as f:
+        _ = f.readline()
+        buses = f.readline().split(',')
+        bus_offsets = [(offset, int(bus)) for offset, bus in enumerate(buses)
+                       if bus != 'x']
+    return bus_offsets
 
 
 def next_bus(departure_time: int,
@@ -20,14 +29,22 @@ def next_bus(departure_time: int,
                 return time, bus
 
 
+def find_magic_timestamp(bus_offsets: List[Tuple[int, int]]) -> int:
+    _, first_bus = bus_offsets[0]
+    for time in count(first_bus, first_bus):
+        if not any((time + offset) % bus for offset, bus in bus_offsets[1:]):
+            return time
+
+
 def part1(filename: str) -> int:
-    earliest_departure, buses_in_service = parse_input(filename)
+    earliest_departure, buses_in_service = parse_input1(filename)
     departure_time, bus = next_bus(earliest_departure, buses_in_service)
     return bus * (departure_time - earliest_departure)
 
 
 def part2(filename: str) -> int:
-    pass
+    bus_offsets = parse_input2(filename)
+    return find_magic_timestamp(bus_offsets)
 
 
 if __name__ == '__main__':
