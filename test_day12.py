@@ -2,6 +2,8 @@ import pytest
 
 from day12 import part1, part2
 
+pytestmark = pytest.mark.skip()
+
 PUZZLE_INPUT = 'input_day12.txt'
 TEST_INPUT = 'test_input_day12.txt'
 EXAMPLE = [
