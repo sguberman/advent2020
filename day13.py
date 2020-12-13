@@ -1,5 +1,5 @@
 from itertools import count
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from utils import elapsed_time, print_results
 
@@ -29,10 +29,14 @@ def next_bus(departure_time: int,
                 return time, bus
 
 
-def find_magic_timestamp(bus_offsets: List[Tuple[int, int]]) -> int:
-    _, first_bus = bus_offsets[0]
-    for time in count(first_bus, first_bus):
-        if not any((time + offset) % bus for offset, bus in bus_offsets[1:]):
+def find_magic_timestamp(bus_offsets: List[Tuple[int, int]],
+                         start_at: Optional[int] = None) -> int:
+    (_, first_bus), *other_buses = bus_offsets
+    if start_at is None:
+        start_at, _ = next_bus(100000000000000,
+                               [first_bus])  # hint from puzzle
+    for time in count(start_at, first_bus):
+        if not any((time + offset) % bus for offset, bus in other_buses):
             return time
 
 
@@ -42,9 +46,9 @@ def part1(filename: str) -> int:
     return bus * (departure_time - earliest_departure)
 
 
-def part2(filename: str) -> int:
+def part2(filename: str, start_at: Optional[int] = None) -> int:
     bus_offsets = parse_input2(filename)
-    return find_magic_timestamp(bus_offsets)
+    return find_magic_timestamp(bus_offsets, start_at)
 
 
 if __name__ == '__main__':
