@@ -24,5 +24,5 @@ def part2(puzzle_input: str) -> int:
 
 if __name__ == '__main__':
     puzzle_input = '1,0,16,5,17,4'
-    print_results(elapsed_time(part1, puzzle_input),
-                  elapsed_time(part2, puzzle_input))
+    print_results(elapsed_time(part1, puzzle_input),  # 1294
+                  elapsed_time(part2, puzzle_input))  # 573522
