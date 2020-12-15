@@ -4,7 +4,7 @@ from typing import Dict, Iterable, List, Optional, Tuple
 
 from utils import elapsed_time, print_results
 
-Instruction = Tuple[Optional[str], Optional[int], Optional[int]]
+Instruction = Tuple[str, int, int]
 Memory = Dict[int, int]
 
 
