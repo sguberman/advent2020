@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from utils import elapsed_time, print_results
 
 
@@ -30,7 +32,7 @@ def part1(filename: str) -> int:
     return abs(x) + abs(y)
 
 
-def rotate(dx, dy, angle):
+def rotate(dx: int, dy: int, angle: int) -> Tuple[int, int]:
     if angle == 90 or angle == -270:
         return -dy, dx
     elif angle == 180 or angle == -180:
@@ -64,5 +66,5 @@ def part2(filename: str) -> int:
 
 if __name__ == '__main__':
     puzzle_input = 'input_day12.txt'
-    print_results(elapsed_time(part1, puzzle_input),
-                  elapsed_time(part2, puzzle_input))
+    print_results(elapsed_time(part1, puzzle_input),  # 882
+                  elapsed_time(part2, puzzle_input))  # 28885
