@@ -19,7 +19,7 @@ def part1(puzzle_input: str, nth_spoken: int = 2020) -> int:
 
 
 def part2(puzzle_input: str) -> int:
-    pass
+    return part1(puzzle_input, 30000000)
 
 
 if __name__ == '__main__':
