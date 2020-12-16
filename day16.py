@@ -82,7 +82,8 @@ def match_fields(rules: Rules,
     matches = defaultdict(list)
     for field in rules.keys():
         for i, column in enumerate(columns):
-            if all(value in chain.from_iterable(rules[field]) for value in column):
+            if all(value in chain.from_iterable(rules[field])
+                   for value in column):
                 matches[field].append(i)
     return matches
 
