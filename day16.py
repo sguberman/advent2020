@@ -141,4 +141,4 @@ if __name__ == '__main__':
     puzzle_input = 'input_day16.txt'
     rules, ticket, nearby = parse_input(puzzle_input)
     print_results(elapsed_time(part1, rules, nearby),  # 29759
-                  elapsed_time(part2, rules, ticket, nearby))
+                  elapsed_time(part2, rules, ticket, nearby))  # 1307550234719

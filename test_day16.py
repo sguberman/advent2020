@@ -1,7 +1,7 @@
 import pytest
 
-from day16 import (invalid_values, match_fields, parse_input, part1, part2,
-                   ticket_columns, valid_tickets)
+from day16 import (eliminate_matches, invalid_values, match_fields,
+                   parse_input, part1, part2, ticket_columns, valid_tickets)
 
 PUZZLE_INPUT = 'input_day16.txt'
 TEST_INPUT_1 = 'test_input_day16_1.txt'
@@ -33,8 +33,7 @@ def test_part1(puzzle_input, answer):
 
 
 @pytest.mark.parametrize('puzzle_input, answer', [
-    (TEST_INPUT_2, 0),
-    (PUZZLE_INPUT, 0),
+    (PUZZLE_INPUT, 1307550234719),
 ])
 def test_part2(puzzle_input, answer):
     rules, ticket, nearby = parse_input(puzzle_input)
@@ -65,5 +64,11 @@ def test_ticket_columns():
 def test_match_fields():
     rules, _, nearby = parse_input(TEST_INPUT_2)
     tickets = valid_tickets(rules, nearby)
-    expected = {'class': [1], 'row': [0], 'seat': [2]}
+    expected = {'class': [1, 2], 'row': [0, 1, 2], 'seat': [2]}
     assert match_fields(rules, tickets) == expected
+
+
+def test_eliminate_matches():
+    matches = {'class': [1, 2], 'row': [0, 1, 2], 'seat': [2]}
+    expected = {'class': [1], 'row': [0], 'seat': [2]}
+    assert eliminate_matches(matches) == expected
