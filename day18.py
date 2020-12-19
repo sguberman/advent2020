@@ -71,37 +71,43 @@ def evaluate(expression: str, parser: ParserElement) -> int:
     return parser.parseString(expression)[0].eval()
 
 
-integer = ppc.integer
-integer.setParseAction(EvalConstant)
-
-
-def part1(filename: str) -> int:
+def part1_parser() -> ParserElement:
+    integer = ppc.integer
+    integer.setParseAction(EvalConstant)
     op = oneOf("+ *")
-
     expr = infixNotation(
         integer,
         [
-            (op, 2, opAssoc.LEFT, EvalOp),
+            (op, 2, opAssoc.LEFT, EvalOp),  # equal precedence
         ]
     )
+    return expr
 
-    return sum(evaluate(expression, expr)
+
+def part2_parser() -> ParserElement:
+    integer = ppc.integer
+    integer.setParseAction(EvalConstant)
+    add_op = "+"
+    mul_op = "*"
+    expr = infixNotation(
+        integer,
+        [
+            (add_op, 2, opAssoc.LEFT, EvalAddOp),  # + takes precedence over *
+            (mul_op, 2, opAssoc.LEFT, EvalMulOp),
+        ]
+    )
+    return expr
+
+
+def part1(filename: str) -> int:
+    parser = part1_parser()
+    return sum(evaluate(expression, parser)
                for expression in stream_input(filename))
 
 
 def part2(filename: str) -> int:
-    add_op = "+"
-    mul_op = "*"
-
-    expr = infixNotation(
-        integer,
-        [
-            (add_op, 2, opAssoc.LEFT, EvalAddOp),
-            (mul_op, 2, opAssoc.LEFT, EvalMulOp),
-        ]
-    )
-
-    return sum(evaluate(expression, expr)
+    parser = part2_parser()
+    return sum(evaluate(expression, parser)
                for expression in stream_input(filename))
 
 
