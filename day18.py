@@ -39,16 +39,26 @@ class EvalOp:
         return result
 
 
-integer = ppc.integer
-op = oneOf("+ *")
+class EvalAddOp:
+    def __init__(self, tokens):
+        self.value = tokens[0]
 
-integer.setParseAction(EvalConstant)
-expr = infixNotation(
-    integer,
-    [
-        (op, 2, opAssoc.LEFT, EvalOp),
-    ]
-)
+    def eval(self):
+        result = self.value[0].eval()
+        for op, val in operatorOperands(self.value[1:]):
+            result += val.eval()
+        return result
+
+
+class EvalMulOp:
+    def __init__(self, tokens):
+        self.value = tokens[0]
+
+    def eval(self):
+        result = self.value[0].eval()
+        for op, val in operatorOperands(self.value[1:]):
+            result *= val.eval()
+        return result
 
 
 def stream_input(filename: str) -> Iterator[str]:
@@ -57,16 +67,42 @@ def stream_input(filename: str) -> Iterator[str]:
             yield line.strip()
 
 
-def evaluate(expression: str) -> int:
-    return expr.parseString(expression)[0].eval()
+def evaluate(expression: str, parser: ParserElement) -> int:
+    return parser.parseString(expression)[0].eval()
+
+
+integer = ppc.integer
+integer.setParseAction(EvalConstant)
 
 
 def part1(filename: str) -> int:
-    return sum(evaluate(expression) for expression in stream_input(filename))
+    op = oneOf("+ *")
+
+    expr = infixNotation(
+        integer,
+        [
+            (op, 2, opAssoc.LEFT, EvalOp),
+        ]
+    )
+
+    return sum(evaluate(expression, expr)
+               for expression in stream_input(filename))
 
 
 def part2(filename: str) -> int:
-    pass
+    add_op = "+"
+    mul_op = "*"
+
+    expr = infixNotation(
+        integer,
+        [
+            (add_op, 2, opAssoc.LEFT, EvalAddOp),
+            (mul_op, 2, opAssoc.LEFT, EvalMulOp),
+        ]
+    )
+
+    return sum(evaluate(expression, expr)
+               for expression in stream_input(filename))
 
 
 if __name__ == '__main__':
