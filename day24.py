@@ -106,12 +106,9 @@ def part2(filename: str) -> int:
     grid = empty_grid(grid_size)
     grid.update(tiles)
     for i in range(1, 101):
-        next_grid = next_day(grid)
+        grid.update(next_day(grid))
         if not i % 10:
-            print(i, sum(next_grid.values()))
-        grid_size += 1
-        grid = empty_grid(grid_size)
-        grid.update(next_grid)
+            print(i, sum(grid.values()))
     return sum(grid.values())
 
 
