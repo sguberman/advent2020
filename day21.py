@@ -18,8 +18,7 @@ def read_foods(filename: str) -> List[Food]:
     return [Food(line) for line in open(filename)]
 
 
-def part1(filename: str) -> int:
-    foods = read_foods(filename)
+def solve_allergens(foods: List[Food]) -> Dict[str, str]:
     allergens: Set[str] = set.union(*(food.allergens for food in foods))
     todo: Set[str] = allergens.copy()
     solved: Dict[str, str] = {}
@@ -37,6 +36,12 @@ def part1(filename: str) -> int:
             solved[possible_ingredients.pop()] = allergen
         else:
             todo.add(allergen)
+    return solved
+
+
+def part1(filename: str) -> int:
+    foods = read_foods(filename)
+    solved = solve_allergens(foods)
     return sum(ingredient not in solved
                for food in foods
                for ingredient in food.ingredients)
