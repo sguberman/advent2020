@@ -10,9 +10,6 @@ class Food:
         self.ingredients: Set[str] = set(ingredients_str.split())
         self.allergens: Set[str] = set(allergens_str.strip(')').split(', '))
 
-    def __repr__(self):
-        return f"{__class__.__name__}('{self._init_line}')"
-
 
 def read_foods(filename: str) -> List[Food]:
     return [Food(line) for line in open(filename)]
@@ -22,10 +19,9 @@ def solve_allergens(foods: List[Food]) -> Dict[str, str]:
     allergens: Set[str] = set.union(*(food.allergens for food in foods))
     todo: Set[str] = allergens.copy()
     solved: Dict[str, str] = {}
+    next_allergen = todo.pop()
     while todo:
-        print(f"{len(todo)} allergens remaining to identify...")
-        allergen = todo.pop()
-        print(f"working on '{allergen}'...")
+        allergen = next_allergen
         possible_ingredients: Set[str] = set.intersection(*(
             food.ingredients
             for food in foods
@@ -34,7 +30,9 @@ def solve_allergens(foods: List[Food]) -> Dict[str, str]:
         possible_ingredients.difference_update(solved)
         if len(possible_ingredients) == 1:
             solved[possible_ingredients.pop()] = allergen
+            next_allergen = todo.pop()
         else:
+            next_allergen = todo.pop()
             todo.add(allergen)
     return solved
 
@@ -47,8 +45,11 @@ def part1(filename: str) -> int:
                for ingredient in food.ingredients)
 
 
-def part2(filename: str) -> int:
-    pass
+def part2(filename: str) -> str:
+    foods = read_foods(filename)
+    solved = solve_allergens(foods)
+    dangerous = ','.join(sorted(solved.keys(), key=solved.get))
+    return dangerous
 
 
 if __name__ == '__main__':
