@@ -128,8 +128,6 @@ def part1(filename: str) -> int:
         tile_id, tile = tiles.popitem()  # LIFO
         coordinate, side, variant = find_match(image, tile)
         if coordinate:
-            print(
-                f"found match for {tile_id}, {len(tiles)} tiles remaining...")
             edges = tile_edges(variant)
             edges.pop(side)
             image[coordinate] = (tile_id, edges)
