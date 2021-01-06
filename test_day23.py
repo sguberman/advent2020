@@ -20,7 +20,7 @@ def test_part1(puzzle_input, answer):
 
 
 @pytest.mark.parametrize('puzzle_input, answer', [
-    #(TEST_INPUT, 0),
+    #(TEST_INPUT, 149245887792),
     #(PUZZLE_INPUT, 0),
 ])
 def test_part2(puzzle_input, answer):
@@ -40,3 +40,7 @@ def test_1_move():
 
 def test_10_moves():
     assert move(EXAMPLE_START, times=10) == EXAMPLE_AFTER_10
+
+
+def test_up_to():
+    assert from_labels('54321', up_to=9) == deque([5, 4, 3, 2, 1, 6, 7, 8, 9])
