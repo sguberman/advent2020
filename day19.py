@@ -1,8 +1,9 @@
-from typing import List, Mapping, Tuple, Union
+import re
+from typing import Dict, List, Tuple
 
 from utils import elapsed_time, print_results
 
-RuleDict = Mapping[int, List[Union[List[int], str]]]
+RuleDict = Dict[str, str]
 
 
 def read_input(filename: str) -> Tuple[List[str], List[str]]:
@@ -18,55 +19,37 @@ def read_input(filename: str) -> Tuple[List[str], List[str]]:
     return rules, messages
 
 
-def parse_rules(rule_strs: List[str]) -> RuleDict:
-    rules: RuleDict = {}
-    for rule_str in rule_strs:
-        rule_num, rule_txt = rule_str.split(': ')
-        try:
-            sublists = rule_txt.split(' | ')
-            rule = [[int(subrule) for subrule in sublist.split()]
-                    for sublist in sublists]
-        except ValueError:
-            rule = [rule_txt.strip('"')]
-        rules[int(rule_num)] = rule
+def parse_rule(rule: str) -> Tuple[str, str]:
+    lhs, rhs = rule.split(': ')
+    return lhs, rhs.strip('"')
+
+
+def parse_rules(rules: List[str]) -> RuleDict:
+    return dict(parse_rule(rule) for rule in rules)
+
+
+def replace_rules(rules: RuleDict) -> RuleDict:
+    to_replace = set(key for key, value in rules.items() if value in 'ab')
+    solved = set(key for key in to_replace)
+    while to_replace:
+        replacing = to_replace.pop()
+        replacing_re = re.compile(r"\b" + replacing + r"\b")
+        replace_with = f"({rules[replacing]})"
+        for key, value in rules.items():
+            if key not in solved:
+                new_value = replacing_re.sub(replace_with, value)
+                rules[key] = new_value
+                if all(x not in '0123456789' for x in new_value):
+                    to_replace.add(key)
+                    solved.add(key)
     return rules
-
-
-def count_matches(rule: List[str], messages: List[str]) -> int:
-    return sum(message in rule for message in messages)
-
-
-def process_rule_dict(rules: RuleDict) -> Mapping[int, List[str]]:
-    pass
-
-
-def resolve_rule(rules: RuleDict, n: int) -> List:
-    rule = rules[n]
-    while any(isinstance(elem, int) for option in rule for elem in option):
-        new_rule = []
-        for option in rule:
-            new_option = []
-            for elem in option:
-                if isinstance(elem, int):
-                    new_option.append(rules[elem])
-                else:
-                    new_option.append(elem)
-            new_rule.append(new_option)
-        rule = new_rule
-    return rule
-
-
-def resolve_rule(rules: RuleDict, n: int) -> List:
-    if item := rules[n][0] in 'ab':
-        return item
-    else:
-        return [[resolve_rule(rules, x) for x in option] for option in rules[n]]
 
 
 def part1(filename: str) -> int:
     rule_strs, messages = read_input(filename)
-    rules = process_rule_dict(parse_rules(rule_strs))
-    return count_matches(rules[0], messages)
+    replaced_rules = replace_rules(parse_rules(rule_strs))
+    rule_0 = re.compile(replaced_rules['0'].replace(' ', ''))
+    return sum(bool(rule_0.fullmatch(m)) for m in messages)
 
 
 def part2(filename: str) -> int:
@@ -74,6 +57,6 @@ def part2(filename: str) -> int:
 
 
 if __name__ == '__main__':
-    puzzle_input = 'test_input_day19.txt'
-    print_results(elapsed_time(part1, puzzle_input),
+    puzzle_input = 'input_day19.txt'
+    print_results(elapsed_time(part1, puzzle_input),  # 102
                   elapsed_time(part2, puzzle_input))
