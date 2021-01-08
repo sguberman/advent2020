@@ -4,12 +4,14 @@ from typing import List
 
 from utils import elapsed_time, print_results
 
+TreeMap = List[str]
 
-def read_tree_map(filename: str) -> List[str]:
+
+def read_tree_map(filename: str) -> TreeMap:
     return [line.strip() for line in open(filename)]
 
 
-def count_trees_in_path(tree_map: List[str], dx: int, dy: int) -> int:
+def count_trees_in_path(tree_map: TreeMap, dx: int, dy: int) -> int:
     width = len(tree_map[0])
     height = len(tree_map)
     xs = (x % width for x in count(0, dx))
@@ -30,5 +32,5 @@ def part2(filename: str) -> int:
 
 if __name__ == '__main__':
     puzzle_input = 'input_day03.txt'
-    print_results(elapsed_time(part1, puzzle_input),
-                  elapsed_time(part2, puzzle_input))
+    print_results(elapsed_time(part1, puzzle_input),  # 181
+                  elapsed_time(part2, puzzle_input))  # 1260601650
