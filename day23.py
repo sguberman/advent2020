@@ -62,4 +62,4 @@ def part2(cup_labels: str) -> int:
 if __name__ == '__main__':
     puzzle_input = '653427918'
     print_results(elapsed_time(part1, puzzle_input),  # 76952348
-                  elapsed_time(part2, puzzle_input))
+                  elapsed_time(part2, puzzle_input))  # 72772522064
